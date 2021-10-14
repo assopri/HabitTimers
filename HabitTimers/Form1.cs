@@ -1,4 +1,5 @@
-﻿using HabitTimers.Classes;
+﻿using FormManagement;
+using HabitTimers.Classes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,12 +23,141 @@ namespace HabitTimers
         //DateTime _pomodoroTimerStartTime;
         DateTime _pomodoroTimerFinishTime;
         DateTime _pomodoroTimerNextStartTime;
+        KeyboardHook _hookCtrlShiftOne = new KeyboardHook();
+        KeyboardHook _hookCtrlShiftTwo = new KeyboardHook();
+        KeyboardHook _hookCtrlShiftThree = new KeyboardHook();
+        KeyboardHook _hookCtrlShiftFour = new KeyboardHook();
+        KeyboardHook _hookCtrlShiftFive = new KeyboardHook();
+
+        NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon();
+
         public Form1()
         {
             InitializeComponent();
 
             LoadFormSettings();
-            // LaunchPeriodicTimer(120);
+
+            InitKeyHooks();
+
+            InitNotifyIcons();
+
+            InitFormSize();
+        }
+        private void InitFormSize()
+        {
+
+            this.Resize += delegate (object sender, EventArgs e)
+            {
+                if (WindowState == FormWindowState.Minimized) this.Hide();
+            };
+            this.WindowState = FormWindowState.Minimized;
+        }
+        private void InitNotifyIcons()
+        {
+            _notifyIcon = new System.Windows.Forms.NotifyIcon();
+            _notifyIcon.Icon = new System.Drawing.Icon("icon.ico");
+            _notifyIcon.Visible = true;
+            _notifyIcon.MouseClick += delegate (object sender, MouseEventArgs args)
+            {
+                if (args.Button == MouseButtons.Left)
+                {
+                    this.Show();
+                    this.WindowState = FormWindowState.Normal;
+                }
+            };
+
+            _notifyIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
+            _notifyIcon.ContextMenuStrip.Items.Add("Exit", null, delegate (object sender, EventArgs args)
+            {
+                Close();
+            });
+        }
+
+        private void InitKeyHooks()
+        {
+            _hookCtrlShiftOne.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
+            {
+                LaunchPomodoroTimer(300);
+            };
+            _hookCtrlShiftOne.RegisterHotKey(ModifierKeysMy.Shift| ModifierKeysMy.Control,
+                Keys.F1);
+
+            _hookCtrlShiftTwo.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
+            {
+                LaunchPomodoroTimer(600);
+            };
+            _hookCtrlShiftTwo.RegisterHotKey(ModifierKeysMy.Shift | ModifierKeysMy.Control,
+                Keys.F2);
+
+            _hookCtrlShiftThree.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
+            {
+                LaunchPomodoroTimer(900);
+            };
+            _hookCtrlShiftThree.RegisterHotKey(ModifierKeysMy.Shift | ModifierKeysMy.Control,
+                Keys.F3);
+
+            _hookCtrlShiftFour.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
+            {
+                LaunchPomodoroTimer(1200);
+            };
+            _hookCtrlShiftFour.RegisterHotKey(ModifierKeysMy.Shift | ModifierKeysMy.Control,
+                Keys.F4);
+
+            _hookCtrlShiftFive.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
+            {
+                LaunchPomodoroTimer(1500);
+            };
+            _hookCtrlShiftFive.RegisterHotKey(ModifierKeysMy.Shift | ModifierKeysMy.Control,
+                Keys.F5);
+        }
+
+        private void LaunchPomodoroTimer(int seconds)
+        {
+            if (_pomodoroTimerLaunchedFlag)
+            {
+                _sythesizer.Speak("Timer is now launched. Will finish in " + (_pomodoroTimerFinishTime - DateTime.Now).TotalSeconds + " seconds");
+                return;
+            }
+            if (DateTime.Now < _pomodoroTimerNextStartTime)
+            {
+                _sythesizer.Speak("You should rest "
+                    + (_pomodoroTimerNextStartTime - DateTime.Now).TotalSeconds + " more seconds");
+                return;
+            }
+            int timeSec = seconds;
+            int buffer = timeSec / 4;
+
+
+
+            Delayed(timeSec, () =>
+            {
+                _sythesizer.Speak("Main time finished. Left " + buffer + " seconds.");
+                Delayed(buffer, () =>
+                {
+                    _sythesizer.Speak("Ready");
+                    _pomodoroTimerLaunchedFlag = false;
+                    _pomodoroTimerNextStartTime = DateTime.Now.AddSeconds(timeSec / 2);
+                    Process.Start("https://www.youtube.com/watch?v=XQuR1OxYJt0");
+                });
+            }
+            );
+            _sythesizer.Speak("Timer for " + timeSec / 60 + " minutes launched.");
+            // _pomodoroTimerStartTime = DateTime.Now;
+            _pomodoroTimerFinishTime = DateTime.Now.AddSeconds(timeSec + buffer);
+            _pomodoroTimerLaunchedFlag = true;
+            //await Task.Delay(timeSec);
+
+            //sythesizer.SpeakAsync(new Prompt("Main time finished. Left " + buffer + " seconds"));
+
+            //await Task.Delay(buffer);
+
+            //sythesizer.SpeakAsync(new Prompt("Ready")); 
+
+        }
+
+        private void _hookCtrlShiftOne_KeyPressed(object sender, KeyPressedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void LoadFormSettings()
@@ -74,47 +204,10 @@ namespace HabitTimers
 
         private void btPomodoro_Click(object sender, EventArgs e)
         {
-            if(_pomodoroTimerLaunchedFlag)
-            {
-                _sythesizer.Speak("Timer is now launched. Will finish in " + (_pomodoroTimerFinishTime - DateTime.Now).Seconds + " seconds");
-                return;
-            }
-            if(DateTime.Now < _pomodoroTimerNextStartTime)
-            {
-                _sythesizer.Speak("You should rest " 
-                    + (_pomodoroTimerNextStartTime - DateTime.Now).Seconds + " more seconds");
-                return;
-            }
-            int timeSec = Convert.ToInt32(sePomodoroPeriod.Value);
-            int buffer = timeSec / 4;
-
-
-
-            Delayed(timeSec, () =>
-                { 
-                    _sythesizer.Speak("Main time finished. Left " + buffer + " seconds.");
-                    Delayed(buffer, () =>
-                    {
-                        _sythesizer.Speak("Ready");
-                        _pomodoroTimerLaunchedFlag = false;
-                        _pomodoroTimerNextStartTime = DateTime.Now.AddSeconds(timeSec / 2);
-                        Process.Start("https://www.youtube.com/watch?v=XQuR1OxYJt0");
-                    });
-                }
-            );
-            _sythesizer.Speak("Timer for " + timeSec/60 + " minutes launched.");
-            // _pomodoroTimerStartTime = DateTime.Now;
-            _pomodoroTimerFinishTime = DateTime.Now.AddSeconds(timeSec+ buffer);
-            _pomodoroTimerLaunchedFlag = true;
-            //await Task.Delay(timeSec);
-
-            //sythesizer.SpeakAsync(new Prompt("Main time finished. Left " + buffer + " seconds"));
-
-            //await Task.Delay(buffer);
-
-            //sythesizer.SpeakAsync(new Prompt("Ready")); 
-
+            LaunchPomodoroTimer(Convert.ToInt32(sePomodoroPeriod.Value));
         }
+
+
 
         public void Delayed(int delaySec, Action action)
         {
@@ -131,6 +224,15 @@ namespace HabitTimers
         {
             Properties.Settings.Default.PomodoroPeriod = (int)sePomodoroPeriod.Value;
             Properties.Settings.Default.Save();
+
+            _hookCtrlShiftOne.Dispose();
+            _hookCtrlShiftTwo.Dispose();
+            _hookCtrlShiftThree.Dispose();
+            _hookCtrlShiftFour.Dispose();
+            _hookCtrlShiftFive.Dispose();
+
+            _notifyIcon.Visible = false;
+            _notifyIcon.Dispose();
         }
     }
 }

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tbLaunchNSDR = new System.Windows.Forms.Button();
             this.btPomodoro = new System.Windows.Forms.Button();
             this.sePomodoroPeriod = new DevExpress.XtraEditors.SpinEdit();
@@ -88,6 +89,7 @@
             this.Controls.Add(this.sePomodoroPeriod);
             this.Controls.Add(this.btPomodoro);
             this.Controls.Add(this.tbLaunchNSDR);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "Form1";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
