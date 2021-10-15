@@ -131,13 +131,16 @@ namespace HabitTimers
         {
             if (_pomodoroTimerLaunchedFlag)
             {
-                _sythesizer.Speak("Timer is now launched. Will finish in " + (_pomodoroTimerFinishTime - DateTime.Now).TotalSeconds + " seconds");
+                int secondsTillFinish = (int)(_pomodoroTimerFinishTime - DateTime.Now).TotalSeconds;
+                _sythesizer.Speak("Timer is now launched. Will finish in " + secondsTillFinish/60 + "minutes " + secondsTillFinish % 60 + " seconds");
                 return;
             }
             if (DateTime.Now < _pomodoroTimerNextStartTime)
             {
+                int secondsTillCanRestart = (int)(_pomodoroTimerNextStartTime - DateTime.Now).TotalSeconds;
                 _sythesizer.Speak("You should rest "
-                    + (_pomodoroTimerNextStartTime - DateTime.Now).TotalSeconds + " more seconds");
+                    + secondsTillCanRestart / 60 + "minutes " + secondsTillCanRestart % 60 + " seconds");
+             
                 return;
             }
             int timeSec = seconds;
@@ -147,10 +150,10 @@ namespace HabitTimers
 
             Delayed(timeSec, () =>
             {
-                _sythesizer.Speak("Main time finished. Left " + buffer + " seconds.");
+                _sythesizer.Speak("Main time finished. Left " + buffer/60 + " minutes " + (buffer % 60) + " seconds");
                 Delayed(buffer, () =>
                 {
-                    _sythesizer.Speak("Ready. Now try leg shots, then change location, then here and now practice.");
+                    _sythesizer.Speak("Ready. Now - go activities, then change location, then mindfulness.");
                     _pomodoroTimerLaunchedFlag = false;
                     _pomodoroTimerNextStartTime = DateTime.Now.AddSeconds(timeSec / 2);
                     Process.Start("https://www.youtube.com/watch?v=XQuR1OxYJt0");
@@ -183,12 +186,11 @@ namespace HabitTimers
 
         private void tbLaunchPeriodicTimer_Click(object sender, EventArgs e)
         {
-            int prepareSeconds = 5;
-            _sythesizer.Speak("You have " + prepareSeconds + " seconds to prepare for NSDR. Warm your hands. Lay down. After please make see listen feel practice.");
+            int prepareSeconds = 10;
+            _sythesizer.Speak("You have " + prepareSeconds + " seconds to prepare for NSDR. Warm your hands. Lay down. After please make see mindfulness practice.");
                 Delayed(prepareSeconds, () =>
                 {
-                    KillProcess("Telegram");
-                    KillProcess("Viber");
+                    RemoveDistractors();
 
                     _sythesizer.Speak("NSDR Launched");
                     System.Diagnostics.Process.Start("https://www.youtube.com/watch?v=A6P_xLLlcGQ");
@@ -196,6 +198,12 @@ namespace HabitTimers
                 }
             );
             
+        }
+
+        private void RemoveDistractors()
+        {
+            KillProcess("Telegram");
+            KillProcess("Viber");
         }
 
         private void LaunchPeriodicTimer(int intervalSec)
