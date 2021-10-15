@@ -42,7 +42,19 @@ namespace HabitTimers
             InitNotifyIcons();
 
             InitFormSize();
+
         }
+
+        private void KillProcess(string v)
+        {
+
+            Process[] localByName = Process.GetProcessesByName(v);
+            foreach (Process p in localByName)
+            {
+                p.Kill();
+            }
+        }
+
         private void InitFormSize()
         {
 
@@ -50,7 +62,11 @@ namespace HabitTimers
             {
                 if (WindowState == FormWindowState.Minimized) this.Hide();
             };
+#if DEBUG
             this.WindowState = FormWindowState.Minimized;
+#else
+            this.WindowState = FormWindowState.Minimized;
+#endif
         }
         private void InitNotifyIcons()
         {
@@ -134,7 +150,7 @@ namespace HabitTimers
                 _sythesizer.Speak("Main time finished. Left " + buffer + " seconds.");
                 Delayed(buffer, () =>
                 {
-                    _sythesizer.Speak("Ready");
+                    _sythesizer.Speak("Ready. Now try leg shots, then change location, then here and now practice.");
                     _pomodoroTimerLaunchedFlag = false;
                     _pomodoroTimerNextStartTime = DateTime.Now.AddSeconds(timeSec / 2);
                     Process.Start("https://www.youtube.com/watch?v=XQuR1OxYJt0");
@@ -171,6 +187,9 @@ namespace HabitTimers
             _sythesizer.Speak("You have " + prepareSeconds + " seconds to prepare for NSDR. Warm your hands. Lay down. After please make see listen feel practice.");
                 Delayed(prepareSeconds, () =>
                 {
+                    KillProcess("Telegram");
+                    KillProcess("Viber");
+
                     _sythesizer.Speak("NSDR Launched");
                     System.Diagnostics.Process.Start("https://www.youtube.com/watch?v=A6P_xLLlcGQ");
                     LaunchPeriodicTimer(120);
