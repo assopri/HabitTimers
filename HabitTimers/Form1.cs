@@ -62,11 +62,9 @@ namespace HabitTimers
             {
                 if (WindowState == FormWindowState.Minimized) this.Hide();
             };
-#if DEBUG
-            this.WindowState = FormWindowState.Minimized;
-#else
-            this.WindowState = FormWindowState.Minimized;
-#endif
+
+            if(!Debugger.IsAttached) this.WindowState = FormWindowState.Minimized;
+
         }
         private void InitNotifyIcons()
         {
@@ -132,14 +130,14 @@ namespace HabitTimers
             if (_pomodoroTimerLaunchedFlag)
             {
                 int secondsTillFinish = (int)(_pomodoroTimerFinishTime - DateTime.Now).TotalSeconds;
-                _sythesizer.Speak("Timer is now launched. Will finish in " + secondsTillFinish/60 + "minutes " + secondsTillFinish % 60 + " seconds");
+                _sythesizer.Speak("Timer is now launched. Will finish in " + secondsTillFinish/60 + "minutes, " + secondsTillFinish % 60 + " seconds");
                 return;
             }
             if (DateTime.Now < _pomodoroTimerNextStartTime)
             {
                 int secondsTillCanRestart = (int)(_pomodoroTimerNextStartTime - DateTime.Now).TotalSeconds;
-                _sythesizer.Speak("You should rest "
-                    + secondsTillCanRestart / 60 + "minutes " + secondsTillCanRestart % 60 + " seconds");
+                _sythesizer.Speak("You should still rest for "
+                    + secondsTillCanRestart / 60 + "minutes, " + secondsTillCanRestart % 60 + " seconds");
              
                 return;
             }
@@ -150,17 +148,28 @@ namespace HabitTimers
 
             Delayed(timeSec, () =>
             {
-                _sythesizer.Speak("Main time finished. Left " + buffer/60 + " minutes " + (buffer % 60) + " seconds");
+                _sythesizer.Speak("Main time finished. Left " + buffer/60 + " minutes, " + (buffer % 60) + " seconds");
                 Delayed(buffer, () =>
                 {
-                    _sythesizer.Speak("Ready. Now - go activities, then change location, then mindfulness.");
                     _pomodoroTimerLaunchedFlag = false;
-                    _pomodoroTimerNextStartTime = DateTime.Now.AddSeconds(timeSec / 2);
+                    int restTime = timeSec / 2;
+                    _sythesizer.Speak("Ready. Now - go activities, then change location, then mindfulness. ");
+                    _pomodoroTimerNextStartTime = DateTime.Now.AddSeconds(restTime);
+
+                    int secondsTillCanRestart = (int)(_pomodoroTimerNextStartTime - DateTime.Now).TotalSeconds;
+                    _sythesizer.Speak("You should rest for "
+                        + ((secondsTillCanRestart / 60 > 0) ? secondsTillCanRestart / 60 + "minutes ":"") + secondsTillCanRestart % 60 + " seconds");
+                    
+                    Delayed(restTime, () =>
+                    {
+                        _sythesizer.Speak("OK. Now you can start new working session. Please, achieve the flow state!");
+
+                    });
                     Process.Start("https://www.youtube.com/watch?v=XQuR1OxYJt0");
                 });
             }
             );
-            _sythesizer.Speak("Timer for " + timeSec / 60 + " minutes launched.");
+            _sythesizer.Speak("Timer for " + timeSec / 60 + " minutes, " + (timeSec % 60) + " seconds launched."); 
             // _pomodoroTimerStartTime = DateTime.Now;
             _pomodoroTimerFinishTime = DateTime.Now.AddSeconds(timeSec + buffer);
             _pomodoroTimerLaunchedFlag = true;
@@ -174,10 +183,6 @@ namespace HabitTimers
 
         }
 
-        private void _hookCtrlShiftOne_KeyPressed(object sender, KeyPressedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
         private void LoadFormSettings()
         {
@@ -241,8 +246,8 @@ namespace HabitTimers
             Timer timer = new Timer();
             timer.Interval = delaySec * 1000;
             timer.Tick += (s, e) => {
-                action();
                 timer.Stop();
+                action();
             };
             timer.Start();
         }
