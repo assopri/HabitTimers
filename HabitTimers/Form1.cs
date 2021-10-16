@@ -163,7 +163,7 @@ namespace HabitTimers
                     Delayed(restTime, () =>
                     {
                         _sythesizer.Speak("OK. Now you can start new working session. Please, achieve the flow state!");
-
+                        StopVideoInBrowser();
                     });
                     Process.Start("https://www.youtube.com/watch?v=XQuR1OxYJt0");
                 });
@@ -183,7 +183,24 @@ namespace HabitTimers
 
         }
 
+        private void StopVideoInBrowser()
+        {
+            try
+            {
+                Click("//*[@id="movie_player"]");
+            }
+            catch (Exception)
+            {
 
+            }
+            if()//
+        }
+
+        public  void Click(string xpath)
+        {
+            EvaluateScript(string.Format("document.evaluate('{0}', document, null, XPathResult.ANY_TYPE, null).iterateNext().click();", xpath.Replace('\'', '\"')));
+
+        }
         private void LoadFormSettings()
         {
             sePomodoroPeriod.Value = Properties.Settings.Default.PomodoroPeriod;
@@ -240,16 +257,16 @@ namespace HabitTimers
         }
 
 
-
+        Timer _currentPomodoroTimer = null;
         public void Delayed(int delaySec, Action action)
         {
-            Timer timer = new Timer();
-            timer.Interval = delaySec * 1000;
-            timer.Tick += (s, e) => {
-                timer.Stop();
+            _currentPomodoroTimer = new Timer();
+            _currentPomodoroTimer.Interval = delaySec * 1000;
+            _currentPomodoroTimer.Tick += (s, e) => {
+                _currentPomodoroTimer.Stop();
                 action();
             };
-            timer.Start();
+            _currentPomodoroTimer.Start();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -265,6 +282,20 @@ namespace HabitTimers
 
             _notifyIcon.Visible = false;
             _notifyIcon.Dispose();
+        }
+
+        private void btStopTimer_Click(object sender, EventArgs e)
+        {
+            if (_currentPomodoroTimer!=null && _currentPomodoroTimer.Enabled)
+            {
+                _currentPomodoroTimer.Stop();
+                _sythesizer.Speak("Current timer stopped");
+            }
+            else
+            {
+                _sythesizer.Speak("Timer is not launched to be stopped. Hi hi hi");
+            }
+            
         }
     }
 }

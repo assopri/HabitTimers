@@ -32,6 +32,8 @@
             this.tbLaunchNSDR = new System.Windows.Forms.Button();
             this.btPomodoro = new System.Windows.Forms.Button();
             this.sePomodoroPeriod = new DevExpress.XtraEditors.SpinEdit();
+            this.btStopTimer = new System.Windows.Forms.Button();
+            this.chromiumWebBrowser1 = new CefSharp.WinForms.ChromiumWebBrowser();
             ((System.ComponentModel.ISupportInitialize)(this.sePomodoroPeriod.Properties)).BeginInit();
             this.SuspendLayout();
             // 
@@ -81,11 +83,32 @@
             this.sePomodoroPeriod.Size = new System.Drawing.Size(100, 20);
             this.sePomodoroPeriod.TabIndex = 2;
             // 
+            // btStopTimer
+            // 
+            this.btStopTimer.Location = new System.Drawing.Point(334, 131);
+            this.btStopTimer.Name = "btStopTimer";
+            this.btStopTimer.Size = new System.Drawing.Size(75, 23);
+            this.btStopTimer.TabIndex = 3;
+            this.btStopTimer.Text = "Stop timer";
+            this.btStopTimer.UseVisualStyleBackColor = true;
+            this.btStopTimer.Click += new System.EventHandler(this.btStopTimer_Click);
+            // 
+            // chromiumWebBrowser1
+            // 
+            this.chromiumWebBrowser1.ActivateBrowserOnCreation = false;
+// TODO: Code generation for '' failed because of Exception 'Invalid Primitive Type: System.IntPtr. Consider using CodeObjectCreateExpression.'.
+            this.chromiumWebBrowser1.Location = new System.Drawing.Point(26, 166);
+            this.chromiumWebBrowser1.Name = "chromiumWebBrowser1";
+            this.chromiumWebBrowser1.Size = new System.Drawing.Size(587, 248);
+            this.chromiumWebBrowser1.TabIndex = 4;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(648, 277);
+            this.ClientSize = new System.Drawing.Size(648, 426);
+            this.Controls.Add(this.chromiumWebBrowser1);
+            this.Controls.Add(this.btStopTimer);
             this.Controls.Add(this.sePomodoroPeriod);
             this.Controls.Add(this.btPomodoro);
             this.Controls.Add(this.tbLaunchNSDR);
@@ -103,6 +126,8 @@
         private System.Windows.Forms.Button tbLaunchNSDR;
         private System.Windows.Forms.Button btPomodoro;
         private DevExpress.XtraEditors.SpinEdit sePomodoroPeriod;
+        private System.Windows.Forms.Button btStopTimer;
+        private CefSharp.WinForms.ChromiumWebBrowser chromiumWebBrowser1;
     }
 }
 
