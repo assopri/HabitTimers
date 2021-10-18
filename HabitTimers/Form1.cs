@@ -1,4 +1,5 @@
-﻿using FormManagement;
+﻿using CefSharp;
+using FormManagement;
 using HabitTimers.Classes;
 using System;
 using System.Collections.Generic;
@@ -43,6 +44,34 @@ namespace HabitTimers
 
             InitFormSize();
 
+            InitBrowser();
+
+        }
+
+        private void InitBrowser()
+        {
+            RequestContextSettings requestContextSettings = new RequestContextSettings();
+            requestContextSettings.PersistSessionCookies = true;
+            requestContextSettings.PersistUserPreferences = true;
+
+            string cachePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                @"Cefsharp\Cache",
+                "habby");
+
+            if (!Directory.Exists(cachePath)) Directory.CreateDirectory(cachePath);
+            requestContextSettings.CachePath = cachePath;
+
+            chromiumWebBrowser1.RequestContext = new RequestContext(requestContextSettings);
+            chromiumWebBrowser1.IsBrowserInitializedChanged += ChromiumWebBrowser1_IsBrowserInitializedChanged;
+            chromiumWebBrowser1.LoadUrlAsync("https://www.whatismybrowser.com/detect/what-is-my-user-agent");// https://youtube.com");
+        }
+
+        private void ChromiumWebBrowser1_IsBrowserInitializedChanged(object sender, EventArgs e)
+        {
+            using (var client = chromiumWebBrowser1.GetDevToolsClient())
+            {
+                _ = client.Network.SetUserAgentOverrideAsync("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36");
+            }
         }
 
         private void KillProcess(string v)
@@ -165,6 +194,7 @@ namespace HabitTimers
                         _sythesizer.Speak("OK. Now you can start new working session. Please, achieve the flow state!");
                         StopVideoInBrowser();
                     });
+                    // Launch("https://www.youtube.com/watch?v=XQuR1OxYJt0");
                     Process.Start("https://www.youtube.com/watch?v=XQuR1OxYJt0");
                 });
             }
@@ -183,22 +213,27 @@ namespace HabitTimers
 
         }
 
+        private void Launch(string v)
+        {
+            chromiumWebBrowser1.LoadUrlAsync(v);
+        }
+
         private void StopVideoInBrowser()
         {
             try
             {
-                Click("//*[@id="movie_player"]");
+                Click("//*[@id=\"movie_player\"]");
             }
             catch (Exception)
             {
 
             }
-            if()//
         }
 
         public  void Click(string xpath)
         {
-            EvaluateScript(string.Format("document.evaluate('{0}', document, null, XPathResult.ANY_TYPE, null).iterateNext().click();", xpath.Replace('\'', '\"')));
+            (chromiumWebBrowser1 as IWebBrowser).EvaluateScriptAsync(
+                string.Format("document.evaluate('{0}', document, null, XPathResult.ANY_TYPE, null).iterateNext().click();", xpath.Replace('\'', '\"')));
 
         }
         private void LoadFormSettings()
@@ -297,5 +332,11 @@ namespace HabitTimers
             }
             
         }
+
+        private void chromiumWebBrowser1_LoadingStateChanged(object sender, LoadingStateChangedEventArgs e)
+        {
+
+        }
+
     }
 }
