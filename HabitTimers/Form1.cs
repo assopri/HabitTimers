@@ -44,35 +44,55 @@ namespace HabitTimers
 
             InitFormSize();
 
-            InitBrowser();
-
         }
+        //private string CefSharpCacheLocalPath = @"Cefsharp\Cache";
+        //public void CefGlobalInit()
+        //{
+        //    string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), CefSharpCacheLocalPath);
+        //    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 
-        private void InitBrowser()
-        {
-            RequestContextSettings requestContextSettings = new RequestContextSettings();
-            requestContextSettings.PersistSessionCookies = true;
-            requestContextSettings.PersistUserPreferences = true;
+        //    CefSharp.Cef.Initialize(new CefSharp.WinForms.CefSettings() { RootCachePath = path });
 
-            string cachePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                @"Cefsharp\Cache",
-                "habby");
+        //}
+        //public void CefShutdown()
+        //{
+        //    try
+        //    {
+        //        Cef.Shutdown();
+        //    }
+        //    catch (Exception exp)
+        //    {
 
-            if (!Directory.Exists(cachePath)) Directory.CreateDirectory(cachePath);
-            requestContextSettings.CachePath = cachePath;
+        //    }
+        //}
 
-            chromiumWebBrowser1.RequestContext = new RequestContext(requestContextSettings);
-            chromiumWebBrowser1.IsBrowserInitializedChanged += ChromiumWebBrowser1_IsBrowserInitializedChanged;
-            chromiumWebBrowser1.LoadUrlAsync("https://www.whatismybrowser.com/detect/what-is-my-user-agent");// https://youtube.com");
-        }
+        //private void InitBrowser()
+        //{
+        //    CefGlobalInit();
 
-        private void ChromiumWebBrowser1_IsBrowserInitializedChanged(object sender, EventArgs e)
-        {
-            using (var client = chromiumWebBrowser1.GetDevToolsClient())
-            {
-                _ = client.Network.SetUserAgentOverrideAsync("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36");
-            }
-        }
+        //    RequestContextSettings requestContextSettings = new RequestContextSettings();
+        //    requestContextSettings.PersistSessionCookies = true;
+        //    requestContextSettings.PersistUserPreferences = true;
+
+        //    string cachePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+        //        CefSharpCacheLocalPath,
+        //        "habby");
+
+        //    if (!Directory.Exists(cachePath)) Directory.CreateDirectory(cachePath);
+        //    requestContextSettings.CachePath = cachePath;
+
+        //    chromiumWebBrowser1.RequestContext = new RequestContext(requestContextSettings);
+        //    chromiumWebBrowser1.IsBrowserInitializedChanged += ChromiumWebBrowser1_IsBrowserInitializedChanged;
+        //    chromiumWebBrowser1.LoadUrlAsync("https://youtube.com");
+        //}
+
+        //private void ChromiumWebBrowser1_IsBrowserInitializedChanged(object sender, EventArgs e)
+        //{
+        //    using (var client = chromiumWebBrowser1.GetDevToolsClient())
+        //    {
+        //        _ = client.Network.SetUserAgentOverrideAsync("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36");
+        //    }
+        //}
 
         private void KillProcess(string v)
         {
@@ -89,7 +109,12 @@ namespace HabitTimers
 
             this.Resize += delegate (object sender, EventArgs e)
             {
-                if (WindowState == FormWindowState.Minimized) this.Hide();
+
+                if (WindowState == FormWindowState.Minimized)
+                {
+                    //ShowInTaskbar = false;
+                    this.Hide();
+                }
             };
 
             if(!Debugger.IsAttached) this.WindowState = FormWindowState.Minimized;
@@ -177,7 +202,7 @@ namespace HabitTimers
 
             Delayed(timeSec, () =>
             {
-                _sythesizer.Speak("Main time finished. Left " + buffer/60 + " minutes, " + (buffer % 60) + " seconds");
+                _sythesizer.Speak("Main time finished. Left " + ((buffer / 60 > 0) ? buffer / 60 + "minutes, " : "") + (buffer % 60) + " seconds");
                 Delayed(buffer, () =>
                 {
                     _pomodoroTimerLaunchedFlag = false;
@@ -192,14 +217,14 @@ namespace HabitTimers
                     Delayed(restTime, () =>
                     {
                         _sythesizer.Speak("OK. Now you can start new working session. Please, achieve the flow state!");
-                        StopVideoInBrowser();
+                        StopBrowserProcess();
                     });
-                    // Launch("https://www.youtube.com/watch?v=XQuR1OxYJt0");
-                    Process.Start("https://www.youtube.com/watch?v=XQuR1OxYJt0");
+                    Launch("https://www.youtube.com/watch?v=XQuR1OxYJt0");
+                    // Process.Start("https://www.youtube.com/watch?v=XQuR1OxYJt0");
                 });
             }
             );
-            _sythesizer.Speak("Timer for " + timeSec / 60 + " minutes, " + (timeSec % 60) + " seconds launched."); 
+            _sythesizer.Speak("Timer for " + ((timeSec / 60 > 0) ? timeSec / 60 + "minutes, " : "") + (timeSec % 60) + " seconds launched."); 
             // _pomodoroTimerStartTime = DateTime.Now;
             _pomodoroTimerFinishTime = DateTime.Now.AddSeconds(timeSec + buffer);
             _pomodoroTimerLaunchedFlag = true;
@@ -212,30 +237,48 @@ namespace HabitTimers
             //sythesizer.SpeakAsync(new Prompt("Ready")); 
 
         }
+        Process BrowserProcess = null;
 
         private void Launch(string v)
         {
-            chromiumWebBrowser1.LoadUrlAsync(v);
+            BrowserProcess = Process.Start("firefox.exe", v);
+            // chromiumWebBrowser1.LoadUrlAsync(v);
         }
-
-        private void StopVideoInBrowser()
+        private void StopBrowserProcess()
         {
-            try
-            {
-                Click("//*[@id=\"movie_player\"]");
-            }
-            catch (Exception)
-            {
+            KillProcess("firefox");
+            //try
+            //{
+            //    BrowserProcess.Kill();
+            //}
+            //catch 
+            //{
 
-            }
+            //}
+            //if(BrowserProcess!=null)
+            //{
+                
+            //}
         }
 
-        public  void Click(string xpath)
-        {
-            (chromiumWebBrowser1 as IWebBrowser).EvaluateScriptAsync(
-                string.Format("document.evaluate('{0}', document, null, XPathResult.ANY_TYPE, null).iterateNext().click();", xpath.Replace('\'', '\"')));
+        ////private void StopVideoInBrowser()
+        ////{
+        ////    try
+        ////    {
+        ////        Click("//*[@id=\"movie_player\"]");
+        ////    }
+        ////    catch (Exception)
+        ////    {
 
-        }
+        ////    }
+        ////}
+
+        //public  void Click(string xpath)
+        //{
+        //    (chromiumWebBrowser1 as IWebBrowser).EvaluateScriptAsync(
+        //        string.Format("document.evaluate('{0}', document, null, XPathResult.ANY_TYPE, null).iterateNext().click();", xpath.Replace('\'', '\"')));
+
+        //}
         private void LoadFormSettings()
         {
             sePomodoroPeriod.Value = Properties.Settings.Default.PomodoroPeriod;
@@ -317,6 +360,8 @@ namespace HabitTimers
 
             _notifyIcon.Visible = false;
             _notifyIcon.Dispose();
+
+            //CefShutdown();
         }
 
         private void btStopTimer_Click(object sender, EventArgs e)

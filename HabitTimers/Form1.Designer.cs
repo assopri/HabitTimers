@@ -30,13 +30,11 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.layoutControl1 = new DevExpress.XtraLayout.LayoutControl();
-            this.chromiumWebBrowser1 = new CefSharp.WinForms.ChromiumWebBrowser();
             this.btStopTimer = new System.Windows.Forms.Button();
             this.sePomodoroPeriod = new DevExpress.XtraEditors.SpinEdit();
             this.btPomodoro = new System.Windows.Forms.Button();
             this.tbLaunchNSDR = new System.Windows.Forms.Button();
             this.Root = new DevExpress.XtraLayout.LayoutControlGroup();
-            this.layoutControlItem1 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem2 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem3 = new DevExpress.XtraLayout.LayoutControlItem();
             this.layoutControlItem4 = new DevExpress.XtraLayout.LayoutControlItem();
@@ -45,7 +43,6 @@
             this.layoutControl1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sePomodoroPeriod.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).BeginInit();
@@ -54,7 +51,6 @@
             // 
             // layoutControl1
             // 
-            this.layoutControl1.Controls.Add(this.chromiumWebBrowser1);
             this.layoutControl1.Controls.Add(this.btStopTimer);
             this.layoutControl1.Controls.Add(this.sePomodoroPeriod);
             this.layoutControl1.Controls.Add(this.btPomodoro);
@@ -62,25 +58,17 @@
             this.layoutControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.layoutControl1.Location = new System.Drawing.Point(0, 0);
             this.layoutControl1.Name = "layoutControl1";
+            this.layoutControl1.OptionsCustomizationForm.DesignTimeCustomizationFormPositionAndSize = new System.Drawing.Rectangle(705, 0, 650, 400);
             this.layoutControl1.Root = this.Root;
-            this.layoutControl1.Size = new System.Drawing.Size(648, 426);
+            this.layoutControl1.Size = new System.Drawing.Size(648, 133);
             this.layoutControl1.TabIndex = 0;
             this.layoutControl1.Text = "lcMain";
             // 
-            // chromiumWebBrowser1
-            // 
-            this.chromiumWebBrowser1.ActivateBrowserOnCreation = false;
-// TODO: Code generation for '' failed because of Exception 'Invalid Primitive Type: System.IntPtr. Consider using CodeObjectCreateExpression.'.
-            this.chromiumWebBrowser1.Location = new System.Drawing.Point(12, 12);
-            this.chromiumWebBrowser1.Name = "chromiumWebBrowser1";
-            this.chromiumWebBrowser1.Size = new System.Drawing.Size(624, 306);
-            this.chromiumWebBrowser1.TabIndex = 9;
-            // 
             // btStopTimer
             // 
-            this.btStopTimer.Location = new System.Drawing.Point(12, 322);
+            this.btStopTimer.Location = new System.Drawing.Point(12, 69);
             this.btStopTimer.Name = "btStopTimer";
-            this.btStopTimer.Size = new System.Drawing.Size(624, 20);
+            this.btStopTimer.Size = new System.Drawing.Size(624, 24);
             this.btStopTimer.TabIndex = 8;
             this.btStopTimer.Text = "Stop timer";
             this.btStopTimer.UseVisualStyleBackColor = true;
@@ -93,7 +81,7 @@
             0,
             0,
             0});
-            this.sePomodoroPeriod.Location = new System.Drawing.Point(105, 346);
+            this.sePomodoroPeriod.Location = new System.Drawing.Point(105, 12);
             this.sePomodoroPeriod.Name = "sePomodoroPeriod";
             this.sePomodoroPeriod.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
@@ -115,9 +103,9 @@
             // 
             // btPomodoro
             // 
-            this.btPomodoro.Location = new System.Drawing.Point(12, 370);
+            this.btPomodoro.Location = new System.Drawing.Point(12, 36);
             this.btPomodoro.Name = "btPomodoro";
-            this.btPomodoro.Size = new System.Drawing.Size(624, 20);
+            this.btPomodoro.Size = new System.Drawing.Size(624, 29);
             this.btPomodoro.TabIndex = 6;
             this.btPomodoro.Text = "Pomodoro Timer";
             this.btPomodoro.UseVisualStyleBackColor = true;
@@ -125,9 +113,9 @@
             // 
             // tbLaunchNSDR
             // 
-            this.tbLaunchNSDR.Location = new System.Drawing.Point(12, 394);
+            this.tbLaunchNSDR.Location = new System.Drawing.Point(12, 97);
             this.tbLaunchNSDR.Name = "tbLaunchNSDR";
-            this.tbLaunchNSDR.Size = new System.Drawing.Size(624, 20);
+            this.tbLaunchNSDR.Size = new System.Drawing.Size(624, 24);
             this.tbLaunchNSDR.TabIndex = 5;
             this.tbLaunchNSDR.Text = "NSDR";
             this.tbLaunchNSDR.UseVisualStyleBackColor = true;
@@ -138,37 +126,27 @@
             this.Root.EnableIndentsWithoutBorders = DevExpress.Utils.DefaultBoolean.True;
             this.Root.GroupBordersVisible = false;
             this.Root.Items.AddRange(new DevExpress.XtraLayout.BaseLayoutItem[] {
-            this.layoutControlItem1,
-            this.layoutControlItem2,
             this.layoutControlItem3,
             this.layoutControlItem4,
-            this.layoutControlItem5});
+            this.layoutControlItem5,
+            this.layoutControlItem2});
             this.Root.Name = "Root";
-            this.Root.Size = new System.Drawing.Size(648, 426);
+            this.Root.Size = new System.Drawing.Size(648, 133);
             this.Root.TextVisible = false;
-            // 
-            // layoutControlItem1
-            // 
-            this.layoutControlItem1.Control = this.chromiumWebBrowser1;
-            this.layoutControlItem1.Location = new System.Drawing.Point(0, 0);
-            this.layoutControlItem1.Name = "layoutControlItem1";
-            this.layoutControlItem1.Size = new System.Drawing.Size(628, 310);
-            this.layoutControlItem1.TextSize = new System.Drawing.Size(0, 0);
-            this.layoutControlItem1.TextVisible = false;
             // 
             // layoutControlItem2
             // 
             this.layoutControlItem2.Control = this.btStopTimer;
-            this.layoutControlItem2.Location = new System.Drawing.Point(0, 310);
+            this.layoutControlItem2.Location = new System.Drawing.Point(0, 57);
             this.layoutControlItem2.Name = "layoutControlItem2";
-            this.layoutControlItem2.Size = new System.Drawing.Size(628, 24);
+            this.layoutControlItem2.Size = new System.Drawing.Size(628, 28);
             this.layoutControlItem2.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem2.TextVisible = false;
             // 
             // layoutControlItem3
             // 
             this.layoutControlItem3.Control = this.sePomodoroPeriod;
-            this.layoutControlItem3.Location = new System.Drawing.Point(0, 334);
+            this.layoutControlItem3.Location = new System.Drawing.Point(0, 0);
             this.layoutControlItem3.Name = "layoutControlItem3";
             this.layoutControlItem3.Size = new System.Drawing.Size(628, 24);
             this.layoutControlItem3.Text = "Pomorodo period";
@@ -177,18 +155,18 @@
             // layoutControlItem4
             // 
             this.layoutControlItem4.Control = this.btPomodoro;
-            this.layoutControlItem4.Location = new System.Drawing.Point(0, 358);
+            this.layoutControlItem4.Location = new System.Drawing.Point(0, 24);
             this.layoutControlItem4.Name = "layoutControlItem4";
-            this.layoutControlItem4.Size = new System.Drawing.Size(628, 24);
+            this.layoutControlItem4.Size = new System.Drawing.Size(628, 33);
             this.layoutControlItem4.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem4.TextVisible = false;
             // 
             // layoutControlItem5
             // 
             this.layoutControlItem5.Control = this.tbLaunchNSDR;
-            this.layoutControlItem5.Location = new System.Drawing.Point(0, 382);
+            this.layoutControlItem5.Location = new System.Drawing.Point(0, 85);
             this.layoutControlItem5.Name = "layoutControlItem5";
-            this.layoutControlItem5.Size = new System.Drawing.Size(628, 24);
+            this.layoutControlItem5.Size = new System.Drawing.Size(628, 28);
             this.layoutControlItem5.TextSize = new System.Drawing.Size(0, 0);
             this.layoutControlItem5.TextVisible = false;
             // 
@@ -196,17 +174,17 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(648, 426);
+            this.ClientSize = new System.Drawing.Size(648, 133);
             this.Controls.Add(this.layoutControl1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
+            this.ShowInTaskbar = false;
             this.Text = "Form1";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.layoutControl1)).EndInit();
             this.layoutControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.sePomodoroPeriod.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Root)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem4)).EndInit();
@@ -219,12 +197,10 @@
 
         private DevExpress.XtraLayout.LayoutControl layoutControl1;
         private DevExpress.XtraLayout.LayoutControlGroup Root;
-        private CefSharp.WinForms.ChromiumWebBrowser chromiumWebBrowser1;
         private System.Windows.Forms.Button btStopTimer;
         private DevExpress.XtraEditors.SpinEdit sePomodoroPeriod;
         private System.Windows.Forms.Button btPomodoro;
         private System.Windows.Forms.Button tbLaunchNSDR;
-        private DevExpress.XtraLayout.LayoutControlItem layoutControlItem1;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem2;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem3;
         private DevExpress.XtraLayout.LayoutControlItem layoutControlItem4;
