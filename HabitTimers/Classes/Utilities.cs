@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VideoLibrary;
 
 namespace HabitTimers.Classes
 {
@@ -15,6 +16,13 @@ namespace HabitTimers.Classes
             var files = Directory.GetFiles(folder, "*.*");
             if (files.Length == 0) return "";
             return files[rand.Next(files.Length)];
+        }
+
+        public static int GetVideoLengthSeconds(string youtubeVideoUrl)
+        {
+            YouTube youTube = YouTube.Default;
+            var video = youTube.GetVideo(youtubeVideoUrl);
+            return (int)video.Info.LengthSeconds;
         }
     }
 }

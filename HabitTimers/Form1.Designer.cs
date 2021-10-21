@@ -119,7 +119,7 @@
             this.tbLaunchNSDR.TabIndex = 5;
             this.tbLaunchNSDR.Text = "NSDR";
             this.tbLaunchNSDR.UseVisualStyleBackColor = true;
-            this.tbLaunchNSDR.Click += new System.EventHandler(this.tbLaunchPeriodicTimer_Click);
+            this.tbLaunchNSDR.Click += new System.EventHandler(this.tbLaunchNSDR_Click);
             // 
             // Root
             // 

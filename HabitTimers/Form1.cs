@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reflection;
 using System.Speech.Synthesis;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -219,7 +220,7 @@ namespace HabitTimers
                         _sythesizer.Speak("OK. Now you can start new working session. Please, achieve the flow state!");
                         StopBrowserProcess();
                     });
-                    Launch("https://www.youtube.com/watch?v=XQuR1OxYJt0");
+                    LaunchVideoByLink("https://www.youtube.com/watch?v=XQuR1OxYJt0");
                     // Process.Start("https://www.youtube.com/watch?v=XQuR1OxYJt0");
                 });
             }
@@ -239,7 +240,7 @@ namespace HabitTimers
         }
         Process BrowserProcess = null;
 
-        private void Launch(string v)
+        private void LaunchVideoByLink(string v)
         {
             BrowserProcess = Process.Start("firefox.exe", v);
             // chromiumWebBrowser1.LoadUrlAsync(v);
@@ -283,20 +284,23 @@ namespace HabitTimers
         {
             sePomodoroPeriod.Value = Properties.Settings.Default.PomodoroPeriod;
         }
-
-        private void tbLaunchPeriodicTimer_Click(object sender, EventArgs e)
+        
+        private void tbLaunchNSDR_Click(object sender, EventArgs e)
         {
+            string videoUrl = "https://www.youtube.com/watch?v=_noquwycq78";
             int prepareSeconds = 10;
             _sythesizer.Speak("You have " + prepareSeconds + " seconds to prepare for NSDR. Warm your hands. Lay down. After please make see mindfulness practice.");
-                Delayed(prepareSeconds, () =>
-                {
-                    RemoveDistractors();
+            
+            if(!Debugger.IsAttached)Thread.Sleep(prepareSeconds*1000);
 
-                    _sythesizer.Speak("NSDR Launched");
-                    System.Diagnostics.Process.Start("https://www.youtube.com/watch?v=A6P_xLLlcGQ");
-                    LaunchPeriodicTimer(120);
-                }
-            );
+            RemoveDistractors();
+
+            _sythesizer.Speak("NSDR Launched");
+            LaunchVideoByLink(videoUrl);
+            //System.Diagnostics.Process.Start(videoUrl);
+            PeriodicTimer timer = new PeriodicTimer(10, Utilities.GetVideoLengthSeconds(videoUrl + 5));
+
+            timer.Launch();
             
         }
 
@@ -305,40 +309,19 @@ namespace HabitTimers
             KillProcess("Telegram");
             KillProcess("Viber");
         }
+        
 
-        private void LaunchPeriodicTimer(int intervalSec)
-        {
-            System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
-
-            t.Interval = intervalSec*1000; // specify interval time as you want
-            t.Tick += new EventHandler(periodicTimer_Tick);
-            t.Start();
-        }
-
-        private void periodicTimer_Tick(object sender, EventArgs e)
-        {
-            string audioFileNameToLaunch = Utilities.GetRandomFileFromFolder(
-                Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                "audios"));
-            if(String.IsNullOrEmpty(audioFileNameToLaunch))
-                Console.Beep();
-            else
-            {
-                System.Diagnostics.Process.Start(audioFileNameToLaunch);
-            }
-            //TODO: close started aspp
-        }
-
+        
         private void btPomodoro_Click(object sender, EventArgs e)
         {
             LaunchPomodoroTimer(Convert.ToInt32(sePomodoroPeriod.Value));
         }
 
 
-        Timer _currentPomodoroTimer = null;
+        System.Windows.Forms.Timer _currentPomodoroTimer = null;
         public void Delayed(int delaySec, Action action)
         {
-            _currentPomodoroTimer = new Timer();
+            _currentPomodoroTimer = new System.Windows.Forms.Timer();
             _currentPomodoroTimer.Interval = delaySec * 1000;
             _currentPomodoroTimer.Tick += (s, e) => {
                 _currentPomodoroTimer.Stop();
