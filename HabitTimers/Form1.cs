@@ -199,35 +199,51 @@ namespace HabitTimers
 
             _hookCtrlShiftPlus.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
             {
-                _sythesizer.Speak("hello");
+                if (CheckIfTimerLaunched()) return;
+                if (CheckIfNewStartIsNotAvailable()) return;
+                _sythesizer.Speak("You can start working session right now");
             };
             _hookCtrlShiftPlus.RegisterHotKey(ModifierKeysMy.Shift | ModifierKeysMy.Control,
                 Keys.Oemplus);
         }
         int _buffer = 0;
-        private void LaunchPomodoroTimer(int seconds)
+
+        bool CheckIfTimerLaunched()
         {
             if (_pomodoroTimerStates == PomodoroTimerStates.Launched)
             {
                 int secondsTillFinish = (int)(_pomodoroTimerFinishTime - DateTime.Now).TotalSeconds - _buffer;
 
                 _sythesizer.Speak("Timer is now launched. Main time will finish in " + ((secondsTillFinish / 60 > 0) ? secondsTillFinish / 60 + "minutes, " : "") + secondsTillFinish % 60 + " seconds");
-                return;
+                return true;
             }
             else if (_pomodoroTimerStates == PomodoroTimerStates.BufferLaunched)
             {
                 int secondsTillFinish = (int)(_pomodoroTimerFinishTime - DateTime.Now).TotalSeconds;
                 _sythesizer.Speak("Timer is now launched. Buffer time will finish in " + ((secondsTillFinish / 60 > 0) ? secondsTillFinish / 60 + "minutes, " : "") + secondsTillFinish % 60 + " seconds");
-                return;
+                return true;
             }
+
+            return false;
+        }
+        bool CheckIfNewStartIsNotAvailable()
+        {
             if (DateTime.Now < _pomodoroTimerNextStartTime)
             {
                 int secondsTillCanRestart = (int)(_pomodoroTimerNextStartTime - DateTime.Now).TotalSeconds;
                 _sythesizer.Speak("You should still rest for "
                     + secondsTillCanRestart / 60 + "minutes, " + secondsTillCanRestart % 60 + " seconds");
-             
-                return;
+
+                return true;
             }
+            return false;
+        }
+        private void LaunchPomodoroTimer(int seconds)
+        {
+            if (CheckIfTimerLaunched()) return;
+
+            if (CheckIfNewStartIsNotAvailable()) return;
+
             int timeSec = seconds;
             _buffer = timeSec / 4;
 
