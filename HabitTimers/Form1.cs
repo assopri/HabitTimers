@@ -1,6 +1,7 @@
 ﻿using CefSharp;
 using FormManagement;
 using HabitTimers.Classes;
+using HabitTimers.Classes.StateIndication;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,7 +22,7 @@ namespace HabitTimers
     public partial class Form1 : Form
     {
         SpeechSynthesizer _sythesizer = new SpeechSynthesizer();
-        bool _pomodoroTimerLaunchedFlag = false;
+
         //DateTime _pomodoroTimerStartTime;
         DateTime _pomodoroTimerFinishTime;
         DateTime _pomodoroTimerNextStartTime;
@@ -34,6 +35,8 @@ namespace HabitTimers
         KeyboardHook _hookCtrlShiftPlus = new KeyboardHook();
 
         NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon();
+
+        PomodoroTimerStates _pomodoroTimerStates = PomodoroTimerStates.Stopped;
 
         public Form1()
         {
@@ -201,13 +204,20 @@ namespace HabitTimers
             _hookCtrlShiftPlus.RegisterHotKey(ModifierKeysMy.Shift | ModifierKeysMy.Control,
                 Keys.Oemplus);
         }
-
+        int _buffer = 0;
         private void LaunchPomodoroTimer(int seconds)
         {
-            if (_pomodoroTimerLaunchedFlag)
+            if (_pomodoroTimerStates == PomodoroTimerStates.Launched)
+            {
+                int secondsTillFinish = (int)(_pomodoroTimerFinishTime - DateTime.Now).TotalSeconds - _buffer;
+
+                _sythesizer.Speak("Timer is now launched. Main time will finish in " + ((secondsTillFinish / 60 > 0) ? secondsTillFinish / 60 + "minutes, " : "") + secondsTillFinish % 60 + " seconds");
+                return;
+            }
+            else if (_pomodoroTimerStates == PomodoroTimerStates.BufferLaunched)
             {
                 int secondsTillFinish = (int)(_pomodoroTimerFinishTime - DateTime.Now).TotalSeconds;
-                _sythesizer.Speak("Timer is now launched. Will finish in " + ((secondsTillFinish / 60 > 0) ? secondsTillFinish / 60 + "minutes, " : "") + secondsTillFinish % 60 + " seconds");
+                _sythesizer.Speak("Timer is now launched. Buffer time will finish in " + ((secondsTillFinish / 60 > 0) ? secondsTillFinish / 60 + "minutes, " : "") + secondsTillFinish % 60 + " seconds");
                 return;
             }
             if (DateTime.Now < _pomodoroTimerNextStartTime)
@@ -219,16 +229,17 @@ namespace HabitTimers
                 return;
             }
             int timeSec = seconds;
-            int buffer = timeSec / 4;
+            _buffer = timeSec / 4;
 
 
-
+            _pomodoroTimerStates = PomodoroTimerStates.Launched;
             Delayed(timeSec, () =>
             {
-                _sythesizer.Speak("Main time finished. Left " + ((buffer / 60 > 0) ? buffer / 60 + " minutes, " : "") + (buffer % 60) + " seconds");
-                Delayed(buffer, () =>
+                _pomodoroTimerStates = PomodoroTimerStates.BufferLaunched;
+                _sythesizer.Speak("Main time finished. Left " + ((_buffer / 60 > 0) ? _buffer / 60 + " minutes, " : "") + (_buffer % 60) + " seconds");
+                Delayed(_buffer, () =>
                 {
-                    _pomodoroTimerLaunchedFlag = false;
+                    _pomodoroTimerStates = PomodoroTimerStates.Stopped;
                     int restTime = timeSec / 2;
                     _sythesizer.Speak("Ready. Now - go activities, then change location, then mindfulness. ");
                     _pomodoroTimerNextStartTime = DateTime.Now.AddSeconds(restTime);
@@ -249,15 +260,8 @@ namespace HabitTimers
             );
             _sythesizer.Speak("Timer for " + ((timeSec / 60 > 0) ? timeSec / 60 + "minutes, " : "") + ((timeSec % 60 > 0) ? (timeSec % 60) + " seconds" : "") + " launched."); 
             // _pomodoroTimerStartTime = DateTime.Now;
-            _pomodoroTimerFinishTime = DateTime.Now.AddSeconds(timeSec + buffer);
-            _pomodoroTimerLaunchedFlag = true;
-            //await Task.Delay(timeSec);
-
-            //sythesizer.SpeakAsync(new Prompt("Main time finished. Left " + buffer + " seconds"));
-
-            //await Task.Delay(buffer);
-
-            //sythesizer.SpeakAsync(new Prompt("Ready")); 
+            _pomodoroTimerFinishTime = DateTime.Now.AddSeconds(timeSec + _buffer);
+            
 
         }
         Process BrowserProcess = null;
@@ -374,7 +378,7 @@ namespace HabitTimers
             if (_currentPomodoroTimer!=null && _currentPomodoroTimer.Enabled)
             {
                 _currentPomodoroTimer.Stop();
-                _pomodoroTimerLaunchedFlag = false;
+                _pomodoroTimerStates = PomodoroTimerStates.Stopped;
                 _sythesizer.Speak("Current timer stopped");
             }
             else
