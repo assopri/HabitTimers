@@ -374,6 +374,7 @@ namespace HabitTimers
             if (_currentPomodoroTimer!=null && _currentPomodoroTimer.Enabled)
             {
                 _currentPomodoroTimer.Stop();
+                _pomodoroTimerLaunchedFlag = false;
                 _sythesizer.Speak("Current timer stopped");
             }
             else
