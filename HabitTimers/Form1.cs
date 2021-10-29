@@ -31,6 +31,8 @@ namespace HabitTimers
         KeyboardHook _hookCtrlShiftFour = new KeyboardHook();
         KeyboardHook _hookCtrlShiftFive = new KeyboardHook();
 
+        KeyboardHook _hookCtrlShiftPlus = new KeyboardHook();
+
         NotifyIcon _notifyIcon = new System.Windows.Forms.NotifyIcon();
 
         public Form1()
@@ -125,6 +127,8 @@ namespace HabitTimers
         {
             _notifyIcon = new System.Windows.Forms.NotifyIcon();
             _notifyIcon.Icon = new System.Drawing.Icon("icon.ico");
+            
+            
             _notifyIcon.Visible = true;
             _notifyIcon.MouseClick += delegate (object sender, MouseEventArgs args)
             {
@@ -134,12 +138,23 @@ namespace HabitTimers
                     this.WindowState = FormWindowState.Normal;
                 }
             };
+            //_notifyIcon.MouseClick += delegate (object sender, MouseEventArgs args)
+            //{
+            //    _notifyIcon.BalloonTipTitle = "title";
+            //    _notifyIcon.BalloonTipText = "hello";
+            //    _notifyIcon.ShowBalloonTip(1000);
+            //};
 
             _notifyIcon.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
             _notifyIcon.ContextMenuStrip.Items.Add("Exit", null, delegate (object sender, EventArgs args)
             {
                 Close();
             });
+        }
+
+        private void _notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void InitKeyHooks()
@@ -178,6 +193,13 @@ namespace HabitTimers
             };
             _hookCtrlShiftFive.RegisterHotKey(ModifierKeysMy.Shift | ModifierKeysMy.Control,
                 Keys.F5);
+
+            _hookCtrlShiftPlus.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
+            {
+                _sythesizer.Speak("hello");
+            };
+            _hookCtrlShiftPlus.RegisterHotKey(ModifierKeysMy.Shift | ModifierKeysMy.Control,
+                Keys.Oemplus);
         }
 
         private void LaunchPomodoroTimer(int seconds)
@@ -185,7 +207,7 @@ namespace HabitTimers
             if (_pomodoroTimerLaunchedFlag)
             {
                 int secondsTillFinish = (int)(_pomodoroTimerFinishTime - DateTime.Now).TotalSeconds;
-                _sythesizer.Speak("Timer is now launched. Will finish in " + secondsTillFinish/60 + "minutes, " + secondsTillFinish % 60 + " seconds");
+                _sythesizer.Speak("Timer is now launched. Will finish in " + ((secondsTillFinish / 60 > 0) ? secondsTillFinish / 60 + "minutes, " : "") + secondsTillFinish % 60 + " seconds");
                 return;
             }
             if (DateTime.Now < _pomodoroTimerNextStartTime)
@@ -203,7 +225,7 @@ namespace HabitTimers
 
             Delayed(timeSec, () =>
             {
-                _sythesizer.Speak("Main time finished. Left " + ((buffer / 60 > 0) ? buffer / 60 + "minutes, " : "") + (buffer % 60) + " seconds");
+                _sythesizer.Speak("Main time finished. Left " + ((buffer / 60 > 0) ? buffer / 60 + " minutes, " : "") + (buffer % 60) + " seconds");
                 Delayed(buffer, () =>
                 {
                     _pomodoroTimerLaunchedFlag = false;
@@ -213,7 +235,7 @@ namespace HabitTimers
 
                     int secondsTillCanRestart = (int)(_pomodoroTimerNextStartTime - DateTime.Now).TotalSeconds;
                     _sythesizer.Speak("You should rest for "
-                        + ((secondsTillCanRestart / 60 > 0) ? secondsTillCanRestart / 60 + "minutes ":"") + secondsTillCanRestart % 60 + " seconds");
+                        + ((secondsTillCanRestart / 60 > 0) ? secondsTillCanRestart / 60 + "minutes ":"") + ((secondsTillCanRestart % 60 > 0) ? (secondsTillCanRestart % 60) + " seconds" : ""));
                     
                     Delayed(restTime, () =>
                     {
@@ -225,7 +247,7 @@ namespace HabitTimers
                 });
             }
             );
-            _sythesizer.Speak("Timer for " + ((timeSec / 60 > 0) ? timeSec / 60 + "minutes, " : "") + (timeSec % 60) + " seconds launched."); 
+            _sythesizer.Speak("Timer for " + ((timeSec / 60 > 0) ? timeSec / 60 + "minutes, " : "") + ((timeSec % 60 > 0) ? (timeSec % 60) + " seconds" : "") + " launched."); 
             // _pomodoroTimerStartTime = DateTime.Now;
             _pomodoroTimerFinishTime = DateTime.Now.AddSeconds(timeSec + buffer);
             _pomodoroTimerLaunchedFlag = true;
@@ -289,7 +311,7 @@ namespace HabitTimers
         {
             string videoUrl = "https://www.youtube.com/watch?v=_noquwycq78";
             int prepareSeconds = 10;
-            _sythesizer.Speak("You have " + prepareSeconds + " seconds to prepare for NSDR. Warm your hands. Lay down. After please make see mindfulness practice.");
+            _sythesizer.Speak("You have " + prepareSeconds + " seconds to prepare for NSDR. Warm your hands. Lay down. After please make mindfulness practice.");
             
             if(!Debugger.IsAttached)Thread.Sleep(prepareSeconds*1000);
 
@@ -298,7 +320,7 @@ namespace HabitTimers
             _sythesizer.Speak("NSDR Launched");
             LaunchVideoByLink(videoUrl);
             //System.Diagnostics.Process.Start(videoUrl);
-            PeriodicTimer timer = new PeriodicTimer(10, Utilities.GetVideoLengthSeconds(videoUrl + 5));
+            PeriodicTimer timer = new PeriodicTimer(120, Utilities.GetVideoLengthSeconds(videoUrl + 5));
 
             timer.Launch();
             
