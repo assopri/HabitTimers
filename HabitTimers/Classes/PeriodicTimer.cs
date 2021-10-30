@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -18,8 +19,13 @@ namespace HabitTimers.Classes
         Action _stopAction = null;
         public PeriodicTimer(int period, int periodicProcessLength, Action periodicAction, Action stopAction)
         {
-            _period = 5;//period;
-            _periodicProcessLength = 15;//periodicProcessLength;
+            _period = period;
+            _periodicProcessLength = periodicProcessLength;
+            if(Debugger.IsAttached)
+            {
+                _period = 5;
+                _periodicProcessLength = 15;
+            }
             _periodicAction = periodicAction;
             _stopAction = stopAction;
         }
