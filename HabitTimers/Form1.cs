@@ -340,7 +340,25 @@ namespace HabitTimers
             _sythesizer.Speak("NSDR Launched");
             LaunchVideoByLink(videoUrl);
             //System.Diagnostics.Process.Start(videoUrl);
-            PeriodicTimer timer = new PeriodicTimer(120, Utilities.GetVideoLengthSeconds(videoUrl + 5));
+            PeriodicTimer timer = new PeriodicTimer(
+                120, 
+                Utilities.GetVideoLengthSeconds(videoUrl) + 5,
+                () =>
+                {
+                    string audioFileNameToLaunch = Utilities.GetRandomFileFromFolder(
+                    Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    "audios"));
+                    if (String.IsNullOrEmpty(audioFileNameToLaunch))
+                        Console.Beep();
+                    else
+                    {
+                        System.Diagnostics.Process.Start(audioFileNameToLaunch);
+                    }
+                },
+                ()=> {
+                    StopBrowserProcess();
+                }
+            );
 
             timer.Launch();
             

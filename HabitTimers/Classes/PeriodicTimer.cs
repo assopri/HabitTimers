@@ -14,10 +14,14 @@ namespace HabitTimers.Classes
         int _periodicProcessLength = 0;
         int _period = 0;
         Timer _periodicTimer = null;
-        public PeriodicTimer(int period, int periodicProcessLength)
+        Action _periodicAction = null;
+        Action _stopAction = null;
+        public PeriodicTimer(int period, int periodicProcessLength, Action periodicAction, Action stopAction)
         {
-            _period = period;
-            _periodicProcessLength = periodicProcessLength;
+            _period = 5;//period;
+            _periodicProcessLength = 15;//periodicProcessLength;
+            _periodicAction = periodicAction;
+            _stopAction = stopAction;
         }
         public void Launch()
         {
@@ -31,22 +35,14 @@ namespace HabitTimers.Classes
 
         private void periodicTimer_Tick(object sender, EventArgs e)
         {
-            if ((_periodicTimerStartedDateTime - DateTime.Now).TotalSeconds >= _periodicProcessLength)
+            if ((DateTime.Now - _periodicTimerStartedDateTime).TotalSeconds >= _periodicProcessLength)
             {
                 _periodicTimer.Stop();
+                _stopAction.Invoke();
             }
             else
             {
-
-                string audioFileNameToLaunch = Utilities.GetRandomFileFromFolder(
-                    Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    "audios"));
-                if (String.IsNullOrEmpty(audioFileNameToLaunch))
-                    Console.Beep();
-                else
-                {
-                    System.Diagnostics.Process.Start(audioFileNameToLaunch);
-                }
+                _periodicAction.Invoke();
             }
         }
 
