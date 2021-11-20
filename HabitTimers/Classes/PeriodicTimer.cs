@@ -41,14 +41,15 @@ namespace HabitTimers.Classes
 
         private void periodicTimer_Tick(object sender, EventArgs e)
         {
-            if ((DateTime.Now - _periodicTimerStartedDateTime).TotalSeconds >= _periodicProcessLength)
+            if (_periodicProcessLength > 0 && 
+                (DateTime.Now - _periodicTimerStartedDateTime).TotalSeconds >= _periodicProcessLength)
             {
                 _periodicTimer.Stop();
-                _stopAction.Invoke();
+                _stopAction?.Invoke();
             }
             else
             {
-                _periodicAction.Invoke();
+                _periodicAction?.Invoke();
             }
         }
 
