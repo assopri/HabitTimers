@@ -17,7 +17,9 @@ namespace HabitTimers.Classes
         Timer _periodicTimer = null;
         Action _periodicAction = null;
         Action _stopAction = null;
-        public PeriodicTimer(int period, int periodicProcessLength, Action periodicAction, Action stopAction)
+        //bool _launchActionImmediately = false;
+        public PeriodicTimer(int period, int periodicProcessLength, Action periodicAction, Action stopAction)//,
+           // bool launchActionImmediately)
         {
             _period = period;
             _periodicProcessLength = periodicProcessLength;
@@ -28,9 +30,13 @@ namespace HabitTimers.Classes
             }
             _periodicAction = periodicAction;
             _stopAction = stopAction;
+            //_launchActionImmediately = launchActionImmediately;
+
         }
         public void Launch()
         {
+            //if(_launchActionImmediately) _periodicAction?.Invoke();
+
             _periodicTimer = new System.Windows.Forms.Timer();
 
             _periodicTimer.Interval = _period * 1000; // specify interval time as you want

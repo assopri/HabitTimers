@@ -28,20 +28,36 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.tbInput = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
+            // 
+            // tbInput
+            // 
+            this.tbInput.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tbInput.Location = new System.Drawing.Point(0, 0);
+            this.tbInput.Name = "tbInput";
+            this.tbInput.Size = new System.Drawing.Size(800, 20);
+            this.tbInput.TabIndex = 0;
+            this.tbInput.TextChanged += new System.EventHandler(this.tbInput_TextChanged);
             // 
             // ImageContainerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.tbInput);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.KeyPreview = true;
             this.Name = "ImageContainerForm";
             this.Text = "ImageContainer";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ImageContainerForm_KeyDown);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
+
+        private System.Windows.Forms.TextBox tbInput;
     }
 }

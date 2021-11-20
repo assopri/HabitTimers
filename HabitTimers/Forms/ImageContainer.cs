@@ -22,6 +22,18 @@ namespace HabitTimers.Forms
             this.BackgroundImage = bpm;
             this.Size = bpm.Size;
             this.Text = caption;
+
+            tbInput.Focus();
+        }
+
+        private void ImageContainerForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            // if (e.KeyCode == Keys.Escape) this.Close();
+        }
+
+        private void tbInput_TextChanged(object sender, EventArgs e)
+        {
+            if (tbInput.Text.Trim().ToLower() == this.Text.ToLower().Trim()) this.Close();
         }
     }
 }

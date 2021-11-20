@@ -165,7 +165,8 @@ namespace HabitTimers
                 }
             };
 
-            if(!Debugger.IsAttached) this.WindowState = FormWindowState.Minimized;
+            //if(!Debugger.IsAttached) 
+            this.WindowState = FormWindowState.Minimized;
 
         }
         private void InitNotifyIcons()
