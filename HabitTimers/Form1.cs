@@ -54,7 +54,7 @@ namespace HabitTimers
             InitFormSize();
 
             PeriodicTimer neutralityReminder = new PeriodicTimer(
-                1200,
+                3600,
                 0,
                 () =>
                 {

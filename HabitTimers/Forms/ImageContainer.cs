@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AUtilities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -33,7 +34,9 @@ namespace HabitTimers.Forms
 
         private void tbInput_TextChanged(object sender, EventArgs e)
         {
-            if (tbInput.Text.Trim().ToLower() == this.Text.ToLower().Trim()) this.Close();
+            if (tbInput.Text.Trim().ToLower() == this.Text.ToLower().Trim() ||
+                StringUtilities.ConvertEngToRus(tbInput.Text.Trim().ToLower())==
+                 this.Text.ToLower().Trim()) this.Close();
         }
     }
 }
