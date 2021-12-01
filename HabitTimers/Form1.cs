@@ -54,33 +54,18 @@ namespace HabitTimers
             InitFormSize();
 
             PeriodicTimer neutralityReminder = new PeriodicTimer(
-                3600,
+                5000,
                 0,
                 () =>
                 {
-                    //string audioFileNameToLaunch = Utilities.GetRandomFileFromFolder(
-                    //Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    //"reminder_audios"));
-                    //if (String.IsNullOrEmpty(audioFileNameToLaunch))
-                    //    Console.Beep();
-                    //else
-                    //{
-                    //    System.Diagnostics.Process.Start(audioFileNameToLaunch);
-                    //}
-
-                    //System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"D:\Dev\2020\MyScenarios\HabitTimers\HabitTimers\audios\09.10.2021-21_08_56.mp3");
-                    //player.Play();
-
-                    //WMPLib.WindowsMediaPlayer wplayer = new WMPLib.WindowsMediaPlayer();
-
-                    //wplayer.URL = @"D:\Dev\2020\MyScenarios\HabitTimers\HabitTimers\audios\09.10.2021-21_08_56.mp3";
-                    //wplayer.controls.play();
-
                     if (_reminderForm == null || _reminderForm.IsDisposed) {
 
-                        string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                                "images", "neu.jpg");
-                        _reminderForm = new ImageContainerForm(path,"Нейтральность");
+                        _reminderForm = new ImageContainerForm("Нейтральность",
+                            @"
+(Лучше возле зеркала)
+1. Расслабляюсь
+2. Расфокусирую взгляд
+3. Проговариваю я вселенная");
                         _reminderForm.TopMost = true;
                         _reminderForm.Show();
                     }
@@ -90,7 +75,28 @@ namespace HabitTimers
 
             neutralityReminder.Launch();
 
-            
+            PeriodicTimer actingReminder = new PeriodicTimer(
+                4500,
+                0,
+                () =>
+                {
+                    if (_reminderForm == null || _reminderForm.IsDisposed)
+                    {
+
+                        _reminderForm = new ImageContainerForm("Лицедейство",
+                            @"
+(Лучше возле зеркала)
+1. Внутренний монолог
+2. Мимика
+3. Пластика");
+                        _reminderForm.TopMost = true;
+                        _reminderForm.Show();
+                    }
+                },
+                null
+                );
+
+            actingReminder.Launch();
 
         }
         //private string CefSharpCacheLocalPath = @"Cefsharp\Cache";
