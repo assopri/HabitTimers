@@ -63,10 +63,11 @@ namespace HabitTimers
                         _reminderForm = new ImageContainerForm("Нейтральность",
                             @"
 (Лучше возле зеркала)
-1. Расслабляюсь
-2. Расфокусирую взгляд
-3. Проговариваю я вселенная");
-                        _reminderForm.TopMost = true;
+1. Физио зевок (3)
+2. Расслабляюсь
+3. Расфокусирую взгляд
+4. Проговариваю я вселенная");
+                        
                         _reminderForm.Show();
                     }
                 },
@@ -82,14 +83,17 @@ namespace HabitTimers
                 {
                     if (_reminderForm == null || _reminderForm.IsDisposed)
                     {
-
-                        _reminderForm = new ImageContainerForm("Лицедейство",
-                            @"
+                        List<string> videos = new List<string> {
+                        "https://www.youtube.com/watch?v=Wq3N8rQT7Iw&t=7s",
+                        "https://youtu.be/v2it8FmNdjk?t=105",
+                        "https://youtu.be/DblcE1oE8Jg?t=228"};
+                    _reminderForm = new ImageContainerForm("Лицедейство",
+                        @"
 (Лучше возле зеркала)
 1. Внутренний монолог
 2. Мимика
-3. Пластика");
-                        _reminderForm.TopMost = true;
+3. Пластика", 10, () => Process.Start(videos[new Random().Next(videos.Count)]));
+                        
                         _reminderForm.Show();
                     }
                 },

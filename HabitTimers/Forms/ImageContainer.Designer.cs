@@ -62,7 +62,6 @@
             this.KeyPreview = true;
             this.Name = "ImageContainerForm";
             this.Text = "ImageContainer";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ImageContainerForm_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();

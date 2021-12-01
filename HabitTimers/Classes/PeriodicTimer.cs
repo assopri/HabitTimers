@@ -23,11 +23,11 @@ namespace HabitTimers.Classes
         {
             _period = period;
             _periodicProcessLength = periodicProcessLength;
-            if(Debugger.IsAttached)
-            {
-                _period = 5;
-                _periodicProcessLength = 15;
-            }
+            //if(Debugger.IsAttached)
+            //{
+            //    _period = 5;
+            //    _periodicProcessLength = 15;
+            //}
             _periodicAction = periodicAction;
             _stopAction = stopAction;
             //_launchActionImmediately = launchActionImmediately;
@@ -38,7 +38,7 @@ namespace HabitTimers.Classes
             //if(_launchActionImmediately) _periodicAction?.Invoke();
 
             _periodicTimer = new System.Windows.Forms.Timer();
-
+            
             _periodicTimer.Interval = _period * 1000; // specify interval time as you want
             _periodicTimer.Tick += new EventHandler(periodicTimer_Tick);
             
