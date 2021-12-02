@@ -27,11 +27,12 @@ namespace HabitTimers
         //DateTime _pomodoroTimerStartTime;
         DateTime _pomodoroTimerFinishTime;
         DateTime _pomodoroTimerNextStartTime;
-        KeyboardHook _hookCtrlShiftOne = new KeyboardHook();
-        KeyboardHook _hookCtrlShiftTwo = new KeyboardHook();
-        KeyboardHook _hookCtrlShiftThree = new KeyboardHook();
-        KeyboardHook _hookCtrlShiftFour = new KeyboardHook();
-        KeyboardHook _hookCtrlShiftFive = new KeyboardHook();
+        KeyboardHook _hookCtrlShiftFOne = new KeyboardHook();
+        KeyboardHook _hookCtrlShiftFTwo = new KeyboardHook();
+        KeyboardHook _hookCtrlShiftFThree = new KeyboardHook();
+        KeyboardHook _hookCtrlShiftFFour = new KeyboardHook();
+        KeyboardHook _hookCtrlShiftFFive = new KeyboardHook();
+        KeyboardHook _hookCtrlShiftFTwelve = new KeyboardHook();
 
         KeyboardHook _hookCtrlShiftPlus = new KeyboardHook();
 
@@ -81,28 +82,47 @@ namespace HabitTimers
                 0,
                 () =>
                 {
-                    if (_reminderForm == null || _reminderForm.IsDisposed)
-                    {
-                        List<string> videos = new List<string> {
-                        "https://www.youtube.com/watch?v=Wq3N8rQT7Iw&t=7s",
-                        "https://youtu.be/v2it8FmNdjk?t=105",
-                        "https://youtu.be/DblcE1oE8Jg?t=228"};
-                    _reminderForm = new ImageContainerForm("Лицедейство",
-                        @"
-(Лучше возле зеркала)
-1. Внутренний монолог
-2. Мимика
-3. Пластика", 10, () => Process.Start(videos[new Random().Next(videos.Count)]));
-                        
-                        _reminderForm.Show();
-                    }
-                },
+                    LaunchActingReminder();
+                }
+                ,
                 null
                 );
 
             actingReminder.Launch();
 
         }
+
+        private void LaunchActingReminder()
+        {
+            List<string> videos = new List<string> {
+                        "https://www.youtube.com/watch?v=Wq3N8rQT7Iw&t=7s",
+                        "https://youtu.be/v2it8FmNdjk?t=105",
+                        "https://youtu.be/DblcE1oE8Jg?t=228"};
+
+            Process.Start(videos[new Random().Next(videos.Count)]);
+
+            //if (_reminderForm == null || _reminderForm.IsDisposed)
+            //{
+
+            //                    _reminderForm = new ImageContainerForm("Лицедейство",
+            //                        @"
+            //(Лучше возле зеркала)
+            //1. Внутренний монолог
+            //2. Мимика
+            //3. Пластика", 10, () => { 
+            //                            LaunchVideoByLink(videos[new Random().Next(videos.Count)]);
+            //                            new Thread(() =>
+            //                            {
+            //                                Thread.CurrentThread.IsBackground = true;
+            //                                Thread.Sleep(10 * 1000);
+            //                                StopBrowserProcess();
+            //                            }).Start();
+            //                        });
+
+            //_reminderForm.Show();
+            //}
+        }
+
         //private string CefSharpCacheLocalPath = @"Cefsharp\Cache";
         //public void CefGlobalInit()
         //{
@@ -215,40 +235,47 @@ namespace HabitTimers
 
         private void InitKeyHooks()
         {
-            _hookCtrlShiftOne.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
+            _hookCtrlShiftFOne.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
             {
                 LaunchPomodoroTimer(300);
             };
-            _hookCtrlShiftOne.RegisterHotKey(ModifierKeysMy.Shift| ModifierKeysMy.Control,
+            _hookCtrlShiftFOne.RegisterHotKey(ModifierKeysMy.Shift| ModifierKeysMy.Control,
                 Keys.F1);
 
-            _hookCtrlShiftTwo.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
+            _hookCtrlShiftFTwo.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
             {
                 LaunchPomodoroTimer(600);
             };
-            _hookCtrlShiftTwo.RegisterHotKey(ModifierKeysMy.Shift | ModifierKeysMy.Control,
+            _hookCtrlShiftFTwo.RegisterHotKey(ModifierKeysMy.Shift | ModifierKeysMy.Control,
                 Keys.F2);
 
-            _hookCtrlShiftThree.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
+            _hookCtrlShiftFThree.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
             {
                 LaunchPomodoroTimer(900);
             };
-            _hookCtrlShiftThree.RegisterHotKey(ModifierKeysMy.Shift | ModifierKeysMy.Control,
+            _hookCtrlShiftFThree.RegisterHotKey(ModifierKeysMy.Shift | ModifierKeysMy.Control,
                 Keys.F3);
 
-            _hookCtrlShiftFour.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
+            _hookCtrlShiftFFour.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
             {
                 LaunchPomodoroTimer(1200);
             };
-            _hookCtrlShiftFour.RegisterHotKey(ModifierKeysMy.Shift | ModifierKeysMy.Control,
+            _hookCtrlShiftFFour.RegisterHotKey(ModifierKeysMy.Shift | ModifierKeysMy.Control,
                 Keys.F4);
 
-            _hookCtrlShiftFive.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
+            _hookCtrlShiftFFive.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
             {
                 LaunchPomodoroTimer(1500);
             };
-            _hookCtrlShiftFive.RegisterHotKey(ModifierKeysMy.Shift | ModifierKeysMy.Control,
+            _hookCtrlShiftFFive.RegisterHotKey(ModifierKeysMy.Shift | ModifierKeysMy.Control,
                 Keys.F5);
+
+            _hookCtrlShiftFTwelve.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
+            {
+                LaunchActingReminder();
+            };
+            _hookCtrlShiftFTwelve.RegisterHotKey(ModifierKeysMy.Shift | ModifierKeysMy.Control,
+                Keys.F12);
 
             _hookCtrlShiftPlus.KeyPressed += delegate (object sender, KeyPressedEventArgs args)
             {
@@ -448,12 +475,12 @@ namespace HabitTimers
             Properties.Settings.Default.PomodoroPeriod = (int)sePomodoroPeriod.Value;
             Properties.Settings.Default.Save();
 
-            _hookCtrlShiftOne.Dispose();
-            _hookCtrlShiftTwo.Dispose();
-            _hookCtrlShiftThree.Dispose();
-            _hookCtrlShiftFour.Dispose();
-            _hookCtrlShiftFive.Dispose();
-
+            _hookCtrlShiftFOne.Dispose();
+            _hookCtrlShiftFTwo.Dispose();
+            _hookCtrlShiftFThree.Dispose();
+            _hookCtrlShiftFFour.Dispose();
+            _hookCtrlShiftFFive.Dispose();
+            _hookCtrlShiftFTwelve.Dispose();
             _notifyIcon.Visible = false;
             _notifyIcon.Dispose();
 
