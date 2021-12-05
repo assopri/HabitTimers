@@ -64,10 +64,9 @@ namespace HabitTimers
                         _reminderForm = new ImageContainerForm("Нейтральность",
                             @"
 (Лучше возле зеркала)
-1. Физио зевок (3)
+1. Физио зевок + 'я во да' (3) - выдох со звуком
 2. Расслабляюсь
-3. Расфокусирую взгляд
-4. Проговариваю я вселенная");
+3. Расфокусирую взгляд");
                         
                         _reminderForm.Show();
                     }
@@ -76,6 +75,28 @@ namespace HabitTimers
                 );
 
             neutralityReminder.Launch();
+
+            PeriodicTimer kegelReminder = new PeriodicTimer(
+                10000,
+                0,
+                () =>
+                {
+                    if (_reminderForm == null || _reminderForm.IsDisposed)
+                    {
+
+                        _reminderForm = new ImageContainerForm("Кегель",
+                            @"
+1. Кегель 'здоровье' (3)
+(образ закачки)
+2. Произвольно по 5 махов ногой");
+
+                        _reminderForm.Show();
+                    }
+                },
+                null
+                );
+
+            kegelReminder.Launch();
 
             PeriodicTimer actingReminder = new PeriodicTimer(
                 4500,
@@ -97,7 +118,16 @@ namespace HabitTimers
             List<string> videos = new List<string> {
                         "https://www.youtube.com/watch?v=Wq3N8rQT7Iw&t=7s",
                         "https://youtu.be/v2it8FmNdjk?t=105",
-                        "https://youtu.be/DblcE1oE8Jg?t=228"};
+                        "https://youtu.be/3xGImir8Qhs?t=29",
+                        "https://youtu.be/95RXL6kFuX0?t=183",
+                        "https://youtu.be/7T2sX-99ChE?t=117",
+                        "https://youtu.be/DblcE1oE8Jg?t=228",
+            "https://youtu.be/XBaMy9ExDLc?t=1010",
+            "https://youtu.be/DblcE1oE8Jg?t=81",
+            "https://youtu.be/4D53tXI20uU?t=30",
+            "https://youtu.be/4D53tXI20uU?t=82",
+            "https://youtu.be/EDLf38odP2E?t=99",
+            "https://youtu.be/EDLf38odP2E?t=118"};
 
             Process.Start(videos[new Random().Next(videos.Count)]);
 
